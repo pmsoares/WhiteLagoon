@@ -4,14 +4,9 @@ using WhiteLagoon.Infrastructure.Data;
 
 namespace WhiteLagoon.Web.Controllers
 {
-    public class VillaNumberController : Controller
+    public class VillaNumberController(ApplicationDbContext db) : Controller
     {
-        private readonly ApplicationDbContext _db;
-
-        public VillaNumberController(ApplicationDbContext db)
-        {
-            _db = db;
-        }
+        private readonly ApplicationDbContext _db = db;
 
         public IActionResult Index()
         {
@@ -25,20 +20,13 @@ namespace WhiteLagoon.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Villa obj)
+        public IActionResult Create(VillaNumber obj)
         {
-            // Custom validations
-            if(obj.Name == obj.Description)
-            {
-                ModelState.AddModelError("", "The Description cannot exactly match the Name.");
-            }
-
-
             if (ModelState.IsValid)
             {
-                _db.Villas.Add(obj);
+                _db.VillaNumbers.Add(obj);
                 _db.SaveChanges();
-                TempData["success"] = "The villa has been created successfully.";
+                TempData["success"] = "The villa number has been created successfully.";
                 return RedirectToAction("Index");
             }
 

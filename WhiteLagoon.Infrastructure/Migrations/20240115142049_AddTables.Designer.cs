@@ -12,15 +12,15 @@ using WhiteLagoon.Infrastructure.Data;
 namespace WhiteLagoon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231013103737_seedVillaToDb")]
-    partial class seedVillaToDb
+    [Migration("20240115142049_AddTables")]
+    partial class AddTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0-rc.2.23480.1")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -44,7 +44,8 @@ namespace WhiteLagoon.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Occupancy")
                         .HasColumnType("int");
@@ -93,6 +94,82 @@ namespace WhiteLagoon.Infrastructure.Migrations
                             Price = 400.0,
                             Sqft = 750
                         });
+                });
+
+            modelBuilder.Entity("WhiteLagoon.Domain.Entities.VillaNumber", b =>
+                {
+                    b.Property<int>("Villa_Number")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SpecialDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VillaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Villa_Number");
+
+                    b.HasIndex("VillaId");
+
+                    b.ToTable("VillaNumbers");
+
+                    b.HasData(
+                        new
+                        {
+                            Villa_Number = 101,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 102,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 103,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 104,
+                            VillaId = 1
+                        },
+                        new
+                        {
+                            Villa_Number = 201,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 202,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 203,
+                            VillaId = 2
+                        },
+                        new
+                        {
+                            Villa_Number = 301,
+                            VillaId = 3
+                        },
+                        new
+                        {
+                            Villa_Number = 302,
+                            VillaId = 3
+                        });
+                });
+
+            modelBuilder.Entity("WhiteLagoon.Domain.Entities.VillaNumber", b =>
+                {
+                    b.HasOne("WhiteLagoon.Domain.Entities.Villa", "Villa")
+                        .WithMany()
+                        .HasForeignKey("VillaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Villa");
                 });
 #pragma warning restore 612, 618
         }

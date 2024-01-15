@@ -143,7 +143,7 @@ namespace WhiteLagoon.Infrastructure.Migrations
                         },
                         new
                         {
-                            Villa_Number = 303,
+                            Villa_Number = 203,
                             VillaId = 2
                         },
                         new
