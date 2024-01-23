@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Infrastructure.Data;
 
@@ -16,6 +17,14 @@ namespace WhiteLagoon.Web.Controllers
 
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> list = _db.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+
+            ViewBag.VillaList = list;
+
             return View();
         }
 
@@ -36,11 +45,8 @@ namespace WhiteLagoon.Web.Controllers
         public IActionResult Update(int villaId)
         {
             Villa? obj = _db.Villas.FirstOrDefault(_ => _.Id == villaId);
-            
-            //Villa? obj2 = _db.Villas.Find(villaId);
-            //var villa = _db.Villas.Where(_ => _.Price>50 && _.Occupancy > 0).FirstOrDefault();
 
-            if(obj is null)
+            if (obj is null)
             {
                 return RedirectToAction("Error", "Home");
             }
