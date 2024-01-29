@@ -41,7 +41,7 @@ namespace WhiteLagoon.Web.Controllers
                 _db.VillaNumbers.Add(obj.VillaNumber);
                 _db.SaveChanges();
                 TempData["success"] = "The villa number has been created successfully.";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             if (roomNumberExists)
@@ -56,59 +56,82 @@ namespace WhiteLagoon.Web.Controllers
             return View(obj);
         }
 
-        public IActionResult Update(int villaId)
+        public IActionResult Update(int villaNumberId)
         {
-            Villa? obj = _db.Villas.FirstOrDefault(_ => _.Id == villaId);
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = _db.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                VillaNumber = _db.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaNumberId)!
+            };
 
-            if (obj is null)
+            if (villaNumberVM.VillaNumber is null)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            return View(obj);
+            return View(villaNumberVM);
         }
 
         [HttpPost]
-        public IActionResult Update(Villa obj)
+        public IActionResult Update(VillaNumberVM villaNumberVM)
         {
             if (ModelState.IsValid)
             {
-                _db.Villas.Update(obj);
+                _db.VillaNumbers.Update(villaNumberVM.VillaNumber);
                 _db.SaveChanges();
-                TempData["success"] = "The villa has been updated successfully.";
-                return RedirectToAction("Index");
+                TempData["success"] = "The villa number has been updated successfully.";
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(obj);
+            villaNumberVM.VillaList = _db.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+
+            return View(villaNumberVM);
         }
 
-        public IActionResult Delete(int villaId)
+        public IActionResult Delete(int villaNumberId)
         {
-            Villa? obj = _db.Villas.FirstOrDefault(_ => _.Id == villaId);
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = _db.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                VillaNumber = _db.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaNumberId)!
+            };
 
-            if (obj is null)
+            if (villaNumberVM.VillaNumber is null)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            return View(obj);
+            return View(villaNumberVM);
         }
 
         [HttpPost]
-        public IActionResult Delete(Villa obj)
+        public IActionResult Delete(VillaNumberVM villaNumberVM)
         {
-            Villa? objFromDb = _db.Villas.FirstOrDefault(_ => _.Id == obj.Id);
+            VillaNumber? objFromDb = _db.VillaNumbers
+                .FirstOrDefault(_ => _.Villa_Number == villaNumberVM.VillaNumber.Villa_Number);
 
             if (objFromDb is not null)
             {
-                _db.Villas.Remove(objFromDb);
+                _db.VillaNumbers.Remove(objFromDb);
                 _db.SaveChanges();
-                TempData["success"] = "The villa has been deleted successfully.";
-                return RedirectToAction("Index");
+                TempData["success"] = "The villa number has been deleted successfully.";
+                return RedirectToAction(nameof(Index));
             }
 
-            TempData["error"] = "The villa has could not be deleted.";
-            return View(obj);
+            TempData["error"] = "The villa number could not be deleted.";
+            return View(villaNumberVM);
         }
     }
 }
