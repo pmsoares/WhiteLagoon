@@ -36,8 +36,9 @@ namespace WhiteLagoon.Infrastructure.Repository
                 query = query.Where(filter);
 
             if (!string.IsNullOrEmpty(includeProperties))
+                //Villa,VillaNumber -- case sensitive
                 foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                    query = query.Include(includeProp);
+                    query = query.Include(includeProp.Trim());
 
             return query.FirstOrDefault()!;
         }
@@ -51,7 +52,7 @@ namespace WhiteLagoon.Infrastructure.Repository
 
             if (!string.IsNullOrEmpty(includeProperties))
                 foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                    query = query.Include(includeProp);
+                    query = query.Include(includeProp.Trim());
 
             return query.ToList();
         }
