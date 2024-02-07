@@ -4,13 +4,13 @@ using WhiteLagoon.Infrastructure.Data;
 
 namespace WhiteLagoon.Infrastructure.Repository
 {
-    public class VillaRepository(ApplicationDbContext db) : Repository<Villa>(db), IVillaRepository
+    public class VillaNumberRepository(ApplicationDbContext db) : Repository<VillaNumber>(db), IVillaNumberRepository
     {
         private readonly ApplicationDbContext _db = db;
 
-        public void Update(Villa entity)
+        public void Update(VillaNumber entity)
         {
-            _db.Villas.Update(entity);
+            _db.VillaNumbers.Update(entity);
         }
     }
 }
