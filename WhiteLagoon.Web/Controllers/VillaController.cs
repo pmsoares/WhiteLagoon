@@ -4,9 +4,16 @@ using WhiteLagoon.Domain.Entities;
 
 namespace WhiteLagoon.Web.Controllers
 {
-    public class VillaController(IUnitOfWork unitOfWork) : Controller
+    public class VillaController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public VillaController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        {
+            _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
+        }
 
         public IActionResult Index()
         {
@@ -26,9 +33,20 @@ namespace WhiteLagoon.Web.Controllers
             if (obj.Name == obj.Description)
                 ModelState.AddModelError("", "The Description cannot exactly match the Name.");
 
-
             if (ModelState.IsValid)
             {
+                if (obj.Image != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(obj.Image.FileName);
+                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\Villa Images");
+
+                    using var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+                    obj.Image.CopyTo(fileStream);
+                    obj.ImageUrl = @"\images\Villa Images\" + fileName;
+                }
+                else
+                    obj.ImageUrl = "https://placehold.co/600x400";
+
                 _unitOfWork.Villa.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "The villa has been created successfully.";
