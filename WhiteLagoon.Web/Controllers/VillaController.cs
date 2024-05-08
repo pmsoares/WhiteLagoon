@@ -5,14 +5,9 @@ using WhiteLagoon.Infrastructure.Data;
 namespace WhiteLagoon.Web.Controllers
 {
 
-    public class VillaController : Controller
+    public class VillaController(ApplicationDbContext db) : Controller
     {
-        private readonly ApplicationDbContext _db;
-
-        public VillaController(ApplicationDbContext db)
-        {
-            _db = db;
-        }
+        private readonly ApplicationDbContext _db = db;
 
         public IActionResult Index()
         {
