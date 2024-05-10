@@ -8,10 +8,12 @@ namespace WhiteLagoon.Web.Controllers
     public class VillaController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public VillaController(IUnitOfWork unitOfWork)
+        public VillaController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -37,6 +39,20 @@ namespace WhiteLagoon.Web.Controllers
 
             if (ModelState.IsValid)
             {
+                //File Upload
+                if (obj.Image != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(obj.Image.FileName);
+                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\VillaImages");
+                    using var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+                    obj.Image.CopyTo(fileStream);
+
+                    obj.ImageUrl = @"\images\VillaImages\" + fileName;
+                }
+                else
+                    obj.ImageUrl = "https://placehold.co/600x400";
+
+
                 _unitOfWork.Villa.Add(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "The villa has been created successfully.";
@@ -51,13 +67,8 @@ namespace WhiteLagoon.Web.Controllers
         {
             Villa? obj = _unitOfWork.Villa.Get(_ => _.Id == villaId);
 
-            //Villa? obj2 = _db.Villas.Find(villaId);
-            //var VillaList = _db.Villas.Where(_ => _.Price > 50 && _.Occupancy > 0);
-
             if (obj is null)
-            {
                 return RedirectToAction("Error", "Home");
-            }
 
             return View(obj);
         }
