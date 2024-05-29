@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace WhiteLagoon.Domain.Entities
 {
-    public class VillaNumber
+    public class Amenity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Display(Name = "Villa Number")]
-        public int Villa_Number { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        public required string Name { get; set; }
+
+        public string? Description { get; set; }
 
         [ForeignKey("Villa")]
         [Display(Name = "Villa")]
+
         public int VillaId { get; set; }
 
         [ValidateNever]
         public Villa Villa { get; set; } = null!;
-
-        [Display(Name = "Special Details")]
-        public string? SpecialDetails { get; set; }
     }
 }
