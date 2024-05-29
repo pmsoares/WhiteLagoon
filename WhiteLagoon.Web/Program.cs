@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WhiteLagoon.Application.Common.Interfaces;
+using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Infrastructure.Data;
 using WhiteLagoon.Infrastructure.Repository;
 
@@ -11,6 +13,17 @@ builder.Services.AddControllersWithViews();
 // Adicionar ApplicationDbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Adicionar o Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+// Personalizar as definições de segurança da password para novos registos
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequiredLength = 8;
+});
 
 // Adicionar UnitOfWork (acesso aos repositórios)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

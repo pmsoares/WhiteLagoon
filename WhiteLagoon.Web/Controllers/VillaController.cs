@@ -1,20 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WhiteLagoon.Application.Common.Interfaces;
 using WhiteLagoon.Domain.Entities;
 
 namespace WhiteLagoon.Web.Controllers
 {
-
-    public class VillaController : Controller
+    [Authorize]
+    public class VillaController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment) : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public VillaController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
-        {
-            _unitOfWork = unitOfWork;
-            _webHostEnvironment = webHostEnvironment;
-        }
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         public IActionResult Index()
         {
